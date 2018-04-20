@@ -26,7 +26,65 @@
     숫자를 적는 칸 : 0~9, 10 종류의 pattern 발생
     이 때, 10 종류의 숫자 각각 : 부류( class )
     부류의 개수 M =10, 부류 = w1,w2, ... , wm
-    </code></pre>
-- 패턴 원천 ( pattern source ) : 패턴을 발생시키는 도메인.
-        ex) 은행의 전표를 인식하는 시스템 : 매일 수많은 고객에 의해 전표 작성, 필기 숫자 패턴 수시로 발행.
-- 
+    </code></pre>  
+  
+- 패턴 원천 ( pattern source ) : 패턴을 발생시키는 도메인.  
+ex) 은행의 전표를 인식하는 시스템 : 매일 수많은 고객에 의해 전표 작성, 필기 숫자 패턴 수시로 발행.
+- 샘플 ( sample ) : 수집한 패턴  
+    - 적절한 입력 장치를 통해 획득
+- Database : 양적, 질적으로 우수해야 한다.
+    - 훈련 집합 ( training set ) : 인식기를 만드는데 사용할 집합
+    - 테스트 집합 ( test set ) : 인식기를 만든 후에 성능을 평가하기 위해 사용하는 집합
+    
+- 특징( feature ) 추출 : M개의 부류가 서로 다른 값을 보일수록 좋다.
+    1. 개별적인 화소를 특징으로 하는 경우 : 64개의 특징 
+        - 벡터로 표현시 : 64차원 벡터 x = (x1,x2, ... , x64)^T
+        - 이 때, x = 특징 벡터, 특징의 개수 = d  
+    2. 비트맵을 가로, 세로 이등분하여 상,하단의  검은 화소수를 세고, 이들의 비를 특징으로 하여 2차원 특징 벡터 x = (x1,x2)^T
+        - 2차원이기 때문에, 특징 공간 ( feature space )에 그릴 수 있다.
+    - 분별력 ( discriminating power ) : 특징이 서로 다른 부류를 얼마나 잘 구별해 주는가
+    - 저주 ( curse of dimensionality ) : 특정 벡터의 차원에 따라 계산량 또는 메모리 요구량이 폭발적으로 증가하는 현상
+
+- 분류 ( classification ) : 어떤 패턴이 들어왔을 때 이것을 M개의 부류 중 하나로 할당해 주는 작업
+- 분류기 (classifier ) : 이 작업을 담당하는 프로그램.
+- 모델 선택 ( model selection ) : 분류기를 표현하는 수학적 모델로 무엇을 쓸 것인지를 결정하는 작업 ( 직선, 2차곡선, ... )
+- 학습 ( learning ) , 훈련 ( training ) : 훈련 집합을 가지고 기울기, 절편 등을 구하는 과정 
+- 선형 분류기 ( linear classifier ) : 결정 초평면을 사용하는 분류기
+    - 결정 초평면( decision hyperplane ) : 특징 공간을 분할하는 역할  ( 특수한 경우 : 결정 직선 ( decision line ), 결정 평면 ( decision plane ))
+- 비선형 분류기 ( nonlinear classifier ) : 2차 이상의 다항식으로 표현된,, 
+    - 결정 곡선 ( decision curve ), 결정 곡면 ( decision surface) , 결정 초곡면 ( decision hypersurface )
+- 지도 학습 ( supervised learning ) : 분류기가 최소의 오류를 갖도록 하는 매개변수를 알아내는 것이 목적
+    - 참 부류 ( true class ) : 훈련집합에 있는 모든 샘플은 자기가 속한 부류를 알고있으며, 이 부류 정보는 적절한 검증과정에 따라 사람이 부여
+- 비지도 학습 ( unsupervised learning ) : 샘플의 부류 정보가 주어지지 않고, 비슷한 샘플들을 같은 집단으로 모으는 것이 목적 (= 군집화)  
+  
+- 패턴인식 시스템의 성능 측정 
+    1. 정인식률 ( correct recognition rate ), 기각률 ( rejection rate ), 오류율 (error rate) 사용
+        - 혼동 행렬 (confusion matrix) : 오류 경향을 더욱 세밀하게 분석할 때 사요. 분류기가 어느 부류를 어느 부류로 잘못 분류하는 지 경향 파악
+    2. 위험 (risk) , 손실 ( loss ) 개념을 사용한 성능 측정
+    3. 검출 ( detection ) : w1->w1 참긍정 (true positive, TP), w2->w2 참부정 (true negative, TN), w1->w2 거짓부정 (false negative, FN), w2->w1 거짓긍정 (false positive, FP)
+        - 검출 시스템의 성능은, 거짓긍정률, 거짓 부정률로 측정할 수 있다.  
+            거짓 긍정률 FPR = FP/(FP+TN), 거짓 부정률 FNR = FN/(FN+TP)
+    4. 검색 (retrieval) : 질의에 적합한 문서를 찾는 문제
+        - 정확률 (precision) TP/(TP+FP), 재현률 (recall) FN/(FN+TP) 로 측정.  
+  
+- 일반화 능력 (generalization) : 시스템이 테스트 집합에 대해 보여주는 성능. 일반적인 상황에 얼마나 잘 적응하느냐를 따지는 척도
+- 과적합 (overfitting) : 훈련 집합에 과다하게 적응하여 너무 복잡한 모델을 사용한 것
+- 훈련집합 = 분류기 학습에 사용 + 검증 집합 ( validation set ) : 모델 성능 측정에 사용, if 훈련집합이 충분히 크지 않으면, 재샘플링 (resampling)기법을 사용하여 같은 샘플을 여러 번 사용한다. : 교차 검증 ( cross validation ), 붓스트랩 ( bootstrap )
+  
+    
+## 1.3 시스템 설계
+- 패턴 인식 시스템의 개발 사이클   
+    DB 수집 -> 특징 설계 -> 분류기 설계 ( 모델 선택 + 학습 ) -> 성능 평가 (성능이 만족될 때까지 여러 피드백을 가지며 설계)
+- 패턴 인식 시스템의 처리 과정  
+    (외부 세계) -> 센싱 -> 분할 -> 특징 추출 -> 분류 -> 후처리 -> (행위)
+- 분할 ( segmentation ) : 전체 영상에서 필요한 부분만을 떼어내는 것
+    - 다중 분류기 결합( multiple classifier combination ) : 인식 성능을 높이기 위해 여러 분류기의 결과를 투표 행위로 보고, 가장 표를 많이 얻은 부류로 최종 분류하는 방법(voting)
+    - 후 처리 (post-processing) : 문맥 (context) 를 적절히 이용하여 성능 향상을 꾀함
+    
+## 1.4 수학
+- 패턴 인식 문제는 많은 경우 최적화 ( optimization ) 문제로 만들어 푼다 : 최적화 문제로 공식화 -> 해 찾기
+    - 비용 함수 ( cost function )이 중요하다.
+    - 초기 해를 설정하고, 어떤 과정을 반복하여 이것을 최적 해( optimal solution )에 조금씩 접근시키는 수치적 ( numerical )방법을 많이 사용한다.
+    
+## 1.5 자원
+- IAPR, ICPR, IEEE, ACM, UCI repo
